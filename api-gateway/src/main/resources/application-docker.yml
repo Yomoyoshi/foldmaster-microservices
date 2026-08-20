@@ -1,0 +1,79 @@
+#server:
+#  port: 8080
+#
+#spring:
+#  main:
+#    web-application-type: reactive
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: user-service
+#          uri: lb://user-service
+#          predicates:
+#            - Path=/api/auth/**, /api/users/**
+#        - id: product-service
+#          uri: lb://product-service
+#          predicates:
+#            - Path=/api/products/**
+#        - id: review-service
+#          uri: lb://review-service
+#          predicates:
+#            - Path=/api/reviews/**
+#        - id: contact-service
+#          uri: lb://contact-service
+#          predicates:
+#            - Path=/api/contact/**
+#        - id: media-service
+#          uri: lb://media-service
+#          predicates:
+#            - Path=/api/images/**
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+#      - org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
+
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://discovery-service:8761/eureka
+#  instance:
+#    prefer-ip-address: true
+
+server:
+  port: 8080
+
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: http://user-service:8081
+          predicates:
+            - Path=/api/auth/**, /api/users/**
+        - id: product-service
+          uri: http://product-service:8082
+          predicates:
+            - Path=/api/products/**
+        - id: review-service
+          uri: http://review-service:8083
+          predicates:
+            - Path=/api/reviews/**
+        - id: contact-service
+          uri: http://contact-service:8084
+          predicates:
+            - Path=/api/contact/**
+        - id: media-service
+          uri: http://media-service:8085
+          predicates:
+            - Path=/api/images/**
+
+# Отключаем Eureka (чтобы не пытался регистрироваться)
+eureka:
+  client:
+    enabled: false
+
+logging:
+  level:
+    com.foldmaster: DEBUG

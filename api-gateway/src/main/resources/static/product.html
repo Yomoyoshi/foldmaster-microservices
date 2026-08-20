@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали товара</title>
+    <link rel="stylesheet" href="css/style.css?v=4">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+    <div class="nav-container">
+        <div class="logo" style="display: flex; align-items: center; gap: 0; text-decoration: none;">
+            <a href="index.html" style="display: flex; align-items: center; gap: 0; text-decoration: none; color: var(--primary);">
+                <img src="images/logo3.png" alt="FoldMaster" style="height: 40px; width: auto; display: block;">
+                <span style="font-size: 1.9rem; font-weight: 800; letter-spacing: -0.5px; margin-left: 0;">FoldMaster</span>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="admin-products.html" id="adminNavLink" style="display:none;">Админка</a></li>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+            <li><a href="#" id="authNavLink">Войти</a></li>
+        </ul>
+    </div>
+</header>
+
+<main>
+    <div id="breadcrumbs" class="breadcrumbs"></div>
+    <div id="productDetail">
+        <div style="text-align: center; padding: 2rem; color: var(--primary);">Загрузка информации...</div>
+    </div>
+
+    <div id="reviewsSection" class="reviews-section" style="margin-top: 3rem;">
+        <h2>Отзывы покупателей</h2>
+        <div id="averageRatingBlock" class="average-rating-block" style="margin-bottom: 1.5rem;"></div>
+        <div id="reviewsList" class="reviews-list"></div>
+
+        <div id="reviewFormContainer" class="review-form">
+            <h3>Оставить отзыв</h3>
+            <form id="reviewForm">
+                <input type="hidden" id="reviewProductId" value="">
+                <div class="form-group">
+                    <select id="reviewRating" required>
+                        <option value="">Оценка</option>
+                        <option value="5">★★★★★ (5)</option>
+                        <option value="4">★★★★☆ (4)</option>
+                        <option value="3">★★★☆☆ (3)</option>
+                        <option value="2">★★☆☆☆ (2)</option>
+                        <option value="1">★☆☆☆☆ (1)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea id="reviewText" rows="4" placeholder="Ваш отзыв..." required></textarea>
+                </div>
+                <button type="submit" class="btn">Отправить отзыв</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>© 2026 FoldMaster — Детальная информация</p>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/product.js"></script>
+
+<!-- Модальное окно -->
+<div id="authModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-auth">&times;</span>
+        <div id="authStepLogin">
+            <h2>Вход</h2>
+            <div class="form-group"><input type="tel" id="loginPhone" placeholder="Номер телефона" required></div>
+            <div class="form-group"><input type="password" id="loginPassword" placeholder="Пароль" required></div>
+            <button id="loginBtn" class="btn">Войти</button>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">Нет аккаунта? <a href="#" id="showRegisterLink" style="color: var(--secondary);">Зарегистрироваться</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;"><a href="#" id="forgotPasswordLink" style="color: var(--secondary);">Забыли пароль?</a></p>
+            <div id="authError" style="color: #ff6b6b; margin-top: 10px;"></div>
+        </div>
+        <div id="authStepRegister" style="display: none;">
+            <h2>Регистрация</h2>
+            <div class="form-group"><input type="tel" id="registerPhone" placeholder="Номер телефона" required></div>
+            <div class="form-group"><input type="text" id="registerName" placeholder="Ваше имя" required></div>
+            <div class="form-group"><input type="email" id="registerEmail" placeholder="Электронная почта" required></div>
+            <div class="form-group"><input type="password" id="registerPassword" placeholder="Пароль" required></div>
+            <button id="registerConfirmBtn" class="btn">Зарегистрироваться</button>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">Уже есть аккаунт? <a href="#" id="showLoginLink" style="color: var(--secondary);">Войти</a></p>
+            <div id="registerError" style="color: #ff6b6b; margin-top: 10px;"></div>
+        </div>
+        <div id="authStepForgot" style="display: none;">
+            <h2>Восстановление пароля</h2>
+            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">Введите номер телефона, указанный при регистрации. Мы отправим ссылку для смены пароля на вашу почту.</p>
+            <div class="form-group"><input type="tel" id="forgotPhone" placeholder="Номер телефона" required></div>
+            <button id="forgotPasswordBtn" class="btn">Отправить ссылку</button>
+            <p style="margin-top: 1rem; font-size: 0.9rem;"><a href="#" id="backToLoginLink" style="color: var(--secondary);">← Вернуться ко входу</a></p>
+            <div id="forgotError" style="color: #ff6b6b; margin-top: 10px;"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

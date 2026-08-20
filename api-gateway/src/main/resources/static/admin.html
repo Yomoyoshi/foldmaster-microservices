@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админка - загрузка фотографий</title>
+    <link rel="stylesheet" href="css/style.css?v=4">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        .upload-form { background: var(--bg-card); padding: 2rem; border-radius: var(--radius); margin-bottom: 2rem; box-shadow: var(--shadow); color: var(--text-on-card); }
+        .upload-form h2 { color: var(--secondary); }
+        .product-select { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 60px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: var(--text-on-card); }
+        .product-select option { color: #000; }
+        .image-list { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+        .image-item { position: relative; border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-sm); padding: 0.5rem; background: var(--bg-card); }
+        .image-item img { width: 150px; height: 150px; object-fit: cover; border-radius: var(--radius-sm); }
+        .delete-btn { position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-weight: bold; }
+        h1 { color: var(--primary); }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="nav-container">
+        <div class="logo"><a href="index.html">🏕️ FoldMaster</a></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+    </div>
+</header>
+
+<main>
+    <h1>Администрирование фотографий</h1>
+    <div class="upload-form">
+        <h2>Загрузить фотографии для товара</h2>
+        <select id="productSelect" class="product-select">
+            <option value="">Выберите товар</option>
+        </select>
+        <input type="file" id="fileInput" multiple accept="image/*" style="color: var(--text-on-card);">
+        <button id="uploadBtn" class="btn" style="margin-top:1rem;">Загрузить</button>
+    </div>
+
+    <div id="existingImages" style="margin-top: 2rem;">
+        <h2 style="color: var(--primary);">Существующие фотографии</h2>
+        <div id="imageList" class="image-list"></div>
+    </div>
+</main>
+
+<script src="js/api.js"></script>
+<script>
+    let currentProductId = null;
+
+    async function loadProducts() {
+        const products = await fetchJSON('/products');
+        const select = document.getElementById('productSelect');
+        select.innerHTML = '<option value="">Выберите товар</option>';
+        products.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.id;
+            option.textContent = `${p.name} (${p.price})`;
+            select.appendChild(option);
+        });
+    }
+
+    async function loadImagesForProduct(productId) {
+        const product = await fetchJSON(`/products/${productId}`);
+        const container = document.getElementById('imageList');
+        container.innerHTML = '';
+        if (product.images && product.images.length) {
+            product.images.forEach(imgUrl => {
+                const div = document.createElement('div');
+                div.className = 'image-item';
+                div.innerHTML = `
+                    <img src="${imgUrl}" alt="product image">
+                    <button class="delete-btn" data-url="${imgUrl}">×</button>
+                `;
+                container.appendChild(div);
+            });
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const url = btn.getAttribute('data-url');
+                    await fetch(`/api/products/${currentProductId}/images?imageUrl=${encodeURIComponent(url)}`, {
+                        method: 'DELETE'
+                    });
+                    loadImagesForProduct(currentProductId);
+                });
+            });
+        } else {
+            container.innerHTML = '<p style="color: rgba(255,255,255,0.7);">Фотографий пока нет</p>';
+        }
+    }
+
+    document.getElementById('productSelect').addEventListener('change', async (e) => {
+        currentProductId = e.target.value;
+        if (currentProductId) {
+            await loadImagesForProduct(currentProductId);
+        } else {
+            document.getElementById('imageList').innerHTML = '';
+        }
+    });
+
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+        if (!currentProductId) {
+            alert('Выберите товар');
+            return;
+        }
+        const files = document.getElementById('fileInput').files;
+        if (!files.length) {
+            alert('Выберите файлы');
+            return;
+        }
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images', files[i]);
+        }
+        const response = await fetch(`/api/products/${currentProductId}/images`, {
+            method: 'POST',
+            body: formData
+        });
+        if (response.ok) {
+            alert('Фотографии загружены');
+            document.getElementById('fileInput').value = '';
+            await loadImagesForProduct(currentProductId);
+        } else {
+            alert('Ошибка загрузки');
+        }
+    });
+
+    loadProducts();
+</script>
+<footer>
+    <p>© FoldMaster — Администрирование</p>
+</footer>
+</body>
+</html>

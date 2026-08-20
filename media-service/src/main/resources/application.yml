@@ -1,0 +1,30 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: media-service
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: mySuperSecretKeyForJWTGeneration123!
+  expiration: 86400000
+
+# Настройки хранения файлов
+storage:
+  location: ./uploads  # папка для сохранения изображений (относительно рабочей директории)
+
+logging:
+  level:
+    com.foldmaster: DEBUG

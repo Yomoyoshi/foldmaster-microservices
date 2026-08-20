@@ -1,0 +1,24 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery-service
+
+eureka:
+  client:
+    # Отключаем регистрацию себя как клиента,
+    # так как это сам сервер регистрации
+    register-with-eureka: false
+    fetch-registry: false
+
+  server:
+    # Отключаем защиту от злоупотреблений (для dev-окружения)
+    enable-self-preservation: false
+
+# Для мониторинга
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
